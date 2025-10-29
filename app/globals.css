@@ -745,4 +745,31 @@
     stroke-linecap: round;
     filter: drop-shadow(0 0 20px currentColor);
   }
+
+  /* Alert Marquee Animations */
+  @keyframes marquee-scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .marquee-content {
+    display: flex;
+    animation: marquee-scroll 30s linear infinite;
+    animation-play-state: running;
+    will-change: transform;
+  }
+
+  .alert-marquee-container:hover .marquee-content {
+    animation-play-state: paused;
+  }
+
+  /* Smooth scrolling performance */
+  .marquee-content {
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
 }

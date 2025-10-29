@@ -1,9 +1,10 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { AnimatedBackground } from '@/components/ui/animated-background'
 import { PremiumNav } from './premium-nav'
+import { AlertMarquee } from './alert-marquee'
 
 interface CommandCenterLayoutProps {
   children: React.ReactNode
@@ -20,12 +21,32 @@ export function CommandCenterLayout({
   userName,
   appName
 }: CommandCenterLayoutProps) {
+  const [highlightedAlertId, setHighlightedAlertId] = useState<string | null>(null)
+
+  const handleAlertClick = (alertId: string) => {
+    setHighlightedAlertId(alertId)
+
+    // Scroll to the insights panel
+    const insightsPanel = document.getElementById('live-insights-panel')
+    if (insightsPanel) {
+      insightsPanel.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+
+    // Clear highlight after 3 seconds
+    setTimeout(() => {
+      setHighlightedAlertId(null)
+    }, 3000)
+  }
+
   return (
     <div className="min-h-screen relative" style={{ background: 'var(--bg-primary)' }}>
       <AnimatedBackground />
 
       {/* Premium Navigation Bar */}
       <PremiumNav userName={userName} appName={appName} />
+
+      {/* Alert Marquee Banner */}
+      <AlertMarquee onAlertClick={handleAlertClick} />
 
       {/* Premium 3-Column Grid: 340px | Flexible | 360px */}
       <div
@@ -76,18 +97,19 @@ export function CommandCenterLayout({
 
         {/* Right Panel - Live Insights (360px exact) */}
         <motion.aside
+          id="live-insights-panel"
           initial={{ x: 100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.4, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
           className="glass-sidebar overflow-hidden hidden xl:block"
           style={{
-            padding: '24px',
+            padding: '0',
             height: 'calc(100vh - 64px)',
           }}
         >
-          <div className="h-full custom-scrollbar overflow-y-auto">
-            {insights || <DefaultInsights />}
-          </div>
+          {React.isValidElement(insights) && React.cloneElement(insights as React.ReactElement<any>, {
+            highlightedAlertId
+          })}
         </motion.aside>
       </div>
     </div>

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { CommandCenterLayout } from '@/components/layout/command-center-layout'
 import { AISidebar } from '@/components/layout/ai-sidebar'
-import { LiveInsightsPanel } from '@/components/layout/live-insights-panel'
+import { LiveInsightsPanel } from '@/components/layout/live-insights-panel-enhanced'
 import { AnimatedProgressRing } from '@/components/dashboard/animated-progress-ring'
 import { PremiumStatCard } from '@/components/dashboard/premium-stat-card'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
