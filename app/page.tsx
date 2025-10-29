@@ -40,6 +40,8 @@ export default function HomePage() {
     <CommandCenterLayout
       sidebar={<AISidebar />}
       insights={<LiveInsightsPanel />}
+      userName="Shahabaj Sheikh"
+      appName="Credit Risk Monitor"
     >
       {/* Premium Header */}
       <motion.div

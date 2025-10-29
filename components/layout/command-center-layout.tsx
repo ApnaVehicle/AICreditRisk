@@ -3,27 +3,37 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { AnimatedBackground } from '@/components/ui/animated-background'
+import { PremiumNav } from './premium-nav'
 
 interface CommandCenterLayoutProps {
   children: React.ReactNode
   sidebar?: React.ReactNode
   insights?: React.ReactNode
+  userName?: string
+  appName?: string
 }
 
 export function CommandCenterLayout({
   children,
   sidebar,
-  insights
+  insights,
+  userName,
+  appName
 }: CommandCenterLayoutProps) {
   return (
     <div className="min-h-screen relative" style={{ background: 'var(--bg-primary)' }}>
       <AnimatedBackground />
 
+      {/* Premium Navigation Bar */}
+      <PremiumNav userName={userName} appName={appName} />
+
       {/* Premium 3-Column Grid: 340px | Flexible | 360px */}
       <div
-        className="grid h-screen"
+        className="grid"
         style={{
           gridTemplateColumns: '340px 1fr 360px',
+          height: '100vh',
+          paddingTop: '64px',
         }}
       >
         {/* Left Panel - AI Sidebar (340px exact) */}
@@ -31,9 +41,10 @@ export function CommandCenterLayout({
           initial={{ x: -100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-          className="glass-sidebar h-screen overflow-hidden"
+          className="glass-sidebar overflow-hidden"
           style={{
             padding: '24px',
+            height: 'calc(100vh - 64px)',
           }}
         >
           <div className="h-full custom-scrollbar overflow-y-auto">
@@ -46,9 +57,10 @@ export function CommandCenterLayout({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.15, ease: [0.4, 0, 0.2, 1] }}
-          className="h-screen overflow-y-auto custom-scrollbar"
+          className="overflow-y-auto custom-scrollbar"
           style={{
             background: 'var(--bg-primary)',
+            height: 'calc(100vh - 64px)',
           }}
         >
           <div
@@ -67,9 +79,10 @@ export function CommandCenterLayout({
           initial={{ x: 100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.4, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
-          className="glass-sidebar h-screen overflow-hidden hidden xl:block"
+          className="glass-sidebar overflow-hidden hidden xl:block"
           style={{
             padding: '24px',
+            height: 'calc(100vh - 64px)',
           }}
         >
           <div className="h-full custom-scrollbar overflow-y-auto">
