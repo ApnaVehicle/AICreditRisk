@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { formatCurrency, getRiskColor, getStatusColor } from '@/lib/utils'
 import { ArrowLeft, Filter, Search } from 'lucide-react'
 import Link from 'next/link'
+import { PageNavigation } from '@/components/navigation/page-navigation'
 
 interface Loan {
   loan_id: string
@@ -75,9 +76,12 @@ export default function LoansPage() {
                 </p>
               </div>
             </div>
-            <Badge variant="outline" className="h-8 px-4">
-              {filteredLoans.length} Loans
-            </Badge>
+            <div className="flex items-center" style={{ gap: '12px' }}>
+              <PageNavigation currentPage="loans" />
+              <Badge variant="outline" className="h-8 px-4">
+                {filteredLoans.length} Loans
+              </Badge>
+            </div>
           </div>
         </div>
       </div>

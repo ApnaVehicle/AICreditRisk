@@ -10,10 +10,9 @@ import { PremiumStatCard } from '@/components/dashboard/premium-stat-card'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { motion } from 'framer-motion'
-import { TrendingUp, TrendingDown, AlertTriangle, DollarSign, Users, Target, BarChart3, Activity } from 'lucide-react'
+import { TrendingUp, TrendingDown, AlertTriangle, DollarSign, Users, Activity, Target } from 'lucide-react'
 import CountUp from 'react-countup'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import { PageNavigation } from '@/components/navigation/page-navigation'
 
 export default function HomePage() {
   const [kpis, setKpis] = useState<any>(null)
@@ -65,20 +64,7 @@ export default function HomePage() {
               Real-time portfolio monitoring with intelligent insights
             </p>
           </div>
-          <div className="flex" style={{ gap: '12px' }}>
-            <Link href="/dashboard">
-              <Button variant="outline" size="sm" className="premium-button">
-                <BarChart3 className="h-4 w-4" style={{ marginRight: '8px' }} />
-                Full Dashboard
-              </Button>
-            </Link>
-            <Link href="/loans">
-              <Button variant="outline" size="sm" className="premium-button">
-                <Target className="h-4 w-4" style={{ marginRight: '8px' }} />
-                Loan Explorer
-              </Button>
-            </Link>
-          </div>
+          <PageNavigation currentPage="dashboard" />
         </div>
       </motion.div>
 
@@ -343,69 +329,6 @@ export default function HomePage() {
             </div>
           </motion.div>
 
-          {/* Quick Actions - Premium */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.9 }}
-          >
-            <Card className="premium-card" style={{
-              borderColor: 'rgba(99, 102, 241, 0.2)',
-              padding: '24px'
-            }}>
-              <CardHeader style={{ padding: 0, marginBottom: '16px' }}>
-                <CardTitle className="text-premium-h3" style={{ color: 'var(--text-primary)' }}>
-                  Quick Insights
-                </CardTitle>
-                <CardDescription className="text-premium-body" style={{
-                  color: 'var(--text-tertiary)',
-                  marginTop: '4px'
-                }}>
-                  Ask the AI assistant on the left for detailed analysis
-                </CardDescription>
-              </CardHeader>
-              <CardContent style={{ padding: 0 }}>
-                <div className="grid" style={{
-                  gap: '12px',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))'
-                }}>
-                  {[
-                    'Analyze high-risk loans in detail',
-                    'Show DPD trend analysis',
-                    'Review sector concentration risks',
-                    'Identify top NPA accounts',
-                    'Generate recovery recommendations',
-                    'Compare portfolio health metrics'
-                  ].map((action, i) => (
-                    <div
-                      key={i}
-                      className="text-premium-body"
-                      style={{
-                        borderRadius: '8px',
-                        border: '1px solid var(--border-primary)',
-                        background: 'var(--bg-tertiary)',
-                        padding: '12px',
-                        color: 'var(--text-secondary)',
-                        transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
-                        cursor: 'default',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = 'rgba(99, 102, 241, 0.1)'
-                        e.currentTarget.style.borderColor = 'var(--border-hover)'
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'var(--bg-tertiary)'
-                        e.currentTarget.style.borderColor = 'var(--border-primary)'
-                      }}
-                    >
-                      <span style={{ marginRight: '8px' }}>💡</span>
-                      {action}
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
         </>
       )}
 
