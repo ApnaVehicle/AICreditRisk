@@ -16,43 +16,67 @@ export function CommandCenterLayout({
   insights
 }: CommandCenterLayoutProps) {
   return (
-    <div className="command-grid bg-background text-foreground relative">
+    <div className="min-h-screen relative" style={{ background: 'var(--bg-primary)' }}>
       <AnimatedBackground />
-      {/* Left Panel - AI Sidebar */}
-      <motion.aside
-        initial={{ x: -100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="h-screen overflow-hidden border-r border-border bg-sidebar"
-      >
-        <div className="h-full custom-scrollbar overflow-y-auto">
-          {sidebar || <DefaultSidebar />}
-        </div>
-      </motion.aside>
 
-      {/* Center Canvas - Dynamic Content */}
-      <motion.main
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
-        className="h-screen overflow-y-auto custom-scrollbar bg-background"
+      {/* Premium 3-Column Grid: 340px | Flexible | 360px */}
+      <div
+        className="grid h-screen"
+        style={{
+          gridTemplateColumns: '340px 1fr 360px',
+        }}
       >
-        <div className="p-6 lg:p-8">
-          {children}
-        </div>
-      </motion.main>
+        {/* Left Panel - AI Sidebar (340px exact) */}
+        <motion.aside
+          initial={{ x: -100, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+          className="glass-sidebar h-screen overflow-hidden"
+          style={{
+            padding: '24px',
+          }}
+        >
+          <div className="h-full custom-scrollbar overflow-y-auto">
+            {sidebar || <DefaultSidebar />}
+          </div>
+        </motion.aside>
 
-      {/* Right Panel - Live Insights */}
-      <motion.aside
-        initial={{ x: 100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.1, ease: 'easeOut' }}
-        className="h-screen overflow-hidden border-l border-border bg-card hidden xl:block"
-      >
-        <div className="h-full custom-scrollbar overflow-y-auto">
-          {insights || <DefaultInsights />}
-        </div>
-      </motion.aside>
+        {/* Center Canvas - Main Dashboard (Flexible with constraints) */}
+        <motion.main
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.15, ease: [0.4, 0, 0.2, 1] }}
+          className="h-screen overflow-y-auto custom-scrollbar"
+          style={{
+            background: 'var(--bg-primary)',
+          }}
+        >
+          <div
+            style={{
+              maxWidth: '1000px',
+              margin: '0 auto',
+              padding: '32px 24px',
+            }}
+          >
+            {children}
+          </div>
+        </motion.main>
+
+        {/* Right Panel - Live Insights (360px exact) */}
+        <motion.aside
+          initial={{ x: 100, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
+          className="glass-sidebar h-screen overflow-hidden hidden xl:block"
+          style={{
+            padding: '24px',
+          }}
+        >
+          <div className="h-full custom-scrollbar overflow-y-auto">
+            {insights || <DefaultInsights />}
+          </div>
+        </motion.aside>
+      </div>
     </div>
   )
 }
@@ -60,28 +84,49 @@ export function CommandCenterLayout({
 // Default Sidebar Placeholder
 function DefaultSidebar() {
   return (
-    <div className="p-6 space-y-6">
-      <div className="space-y-2">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg gradient-ai flex items-center justify-center">
-            <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <div className="flex items-center" style={{ gap: '12px' }}>
+          <div
+            className="gradient-ai flex items-center justify-center"
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '8px',
+            }}
+          >
+            <svg className="text-white" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
-          <h1 className="text-lg font-semibold">AI Assistant</h1>
+          <h1 className="text-premium-h3" style={{ color: 'var(--text-primary)' }}>
+            AI Assistant
+          </h1>
         </div>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-premium-label" style={{ color: 'var(--text-quaternary)' }}>
           Your intelligent credit risk companion
         </p>
       </div>
 
-      <div className="h-px bg-border" />
+      <div
+        style={{
+          height: '1px',
+          background: 'var(--border-primary)',
+        }}
+      />
 
-      <div className="space-y-3">
-        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <p
+          className="text-premium-overline"
+          style={{
+            color: 'var(--text-quaternary)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.08em',
+          }}
+        >
           Quick Actions
         </p>
-        <div className="space-y-2">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {[
             'Analyze portfolio risk',
             'Show top NPA accounts',
@@ -90,7 +135,26 @@ function DefaultSidebar() {
           ].map((action, i) => (
             <button
               key={i}
-              className="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-sidebar-accent transition-colors"
+              className="text-premium-body"
+              style={{
+                width: '100%',
+                textAlign: 'left',
+                padding: '12px',
+                borderRadius: '8px',
+                background: 'transparent',
+                border: '1px solid var(--border-primary)',
+                color: 'var(--text-secondary)',
+                cursor: 'pointer',
+                transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'var(--bg-tertiary)'
+                e.currentTarget.style.borderColor = 'var(--border-hover)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent'
+                e.currentTarget.style.borderColor = 'var(--border-primary)'
+              }}
             >
               {action}
             </button>
@@ -104,36 +168,58 @@ function DefaultSidebar() {
 // Default Insights Placeholder
 function DefaultInsights() {
   return (
-    <div className="p-6 space-y-6">
-      <div className="space-y-2">
-        <h2 className="text-lg font-semibold">Live Insights</h2>
-        <p className="text-sm text-muted-foreground">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <h2 className="text-premium-h3" style={{ color: 'var(--text-primary)' }}>
+          Live Insights
+        </h2>
+        <p className="text-premium-label" style={{ color: 'var(--text-quaternary)' }}>
           Real-time risk monitoring
         </p>
       </div>
 
-      <div className="h-px bg-border" />
+      <div
+        style={{
+          height: '1px',
+          background: 'var(--border-primary)',
+        }}
+      />
 
-      <div className="space-y-4">
-        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <p
+          className="text-premium-overline"
+          style={{
+            color: 'var(--text-quaternary)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.08em',
+          }}
+        >
           Recent Alerts
         </p>
-        <div className="space-y-3">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {[
-            { type: 'warning', message: 'High-risk loan detected', time: '2m ago' },
-            { type: 'info', message: 'DPD threshold crossed', time: '15m ago' },
-            { type: 'success', message: 'Recovery completed', time: '1h ago' }
+            { type: 'warning', message: 'High-risk loan detected', time: '2m ago', color: '#F59E0B' },
+            { type: 'info', message: 'DPD threshold crossed', time: '15m ago', color: '#3B82F6' },
+            { type: 'success', message: 'Recovery completed', time: '1h ago', color: '#10B981' }
           ].map((alert, i) => (
             <div
               key={i}
-              className={`p-3 rounded-lg border ${
-                alert.type === 'warning' ? 'bg-amber-950/20 border-amber-900/30' :
-                alert.type === 'info' ? 'bg-blue-950/20 border-blue-900/30' :
-                'bg-emerald-950/20 border-emerald-900/30'
-              }`}
+              style={{
+                padding: '12px',
+                borderRadius: '8px',
+                background: 'var(--bg-tertiary)',
+                border: '1px solid var(--border-primary)',
+                borderLeftWidth: '3px',
+                borderLeftColor: alert.color,
+                transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+              }}
             >
-              <p className="text-sm font-medium">{alert.message}</p>
-              <p className="text-xs text-muted-foreground mt-1">{alert.time}</p>
+              <p className="text-premium-body" style={{ color: 'var(--text-primary)', fontWeight: '500' }}>
+                {alert.message}
+              </p>
+              <p className="text-premium-caption" style={{ color: 'var(--text-quaternary)', marginTop: '4px' }}>
+                {alert.time}
+              </p>
             </div>
           ))}
         </div>
