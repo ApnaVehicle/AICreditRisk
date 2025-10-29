@@ -1,0 +1,168 @@
+// Prisma Schema for Credit Risk Monitoring AI
+// Database: SQLite (local file-based database for development)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// TABLE 1: CUSTOMERS
+// ============================================================================
+// Stores customer demographic and financial information
+
+model Customer {
+  id                String           @id @default(uuid())
+  customer_name     String
+  age               Int              // 25-65 years
+  monthly_income    Float            // ₹25,000 to ₹5,00,000
+  credit_score      Int              // 300-850 range
+  employment_status EmploymentStatus
+  dti_ratio         Float            // Debt-to-Income ratio: 0-100%
+  geography         String           // Mumbai, Delhi, Bangalore, Pune, etc.
+  registration_date DateTime         @default(now())
+
+  // Relationships
+  loans             Loan[]
+
+  // Indexes for performance
+  @@index([credit_score])
+  @@index([geography])
+  @@index([employment_status])
+}
+
+enum EmploymentStatus {
+  SALARIED
+  SELF_EMPLOYED
+  BUSINESS
+}
+
+// ============================================================================
+// TABLE 2: LOANS
+// ============================================================================
+// Stores loan details, amounts, sectors, and current status
+
+model Loan {
+  id                   String           @id @default(uuid())
+  customer_id          String
+  loan_amount          Float            // ₹50,000 to ₹50,00,000
+  interest_rate        Float            // 8-18% annual interest
+  loan_tenure_months   Int              // 12-60 months
+  sector               Sector
+  loan_type            LoanType
+  disbursement_date    DateTime
+  next_due_date        DateTime?
+  outstanding_amount   Float
+  status               LoanStatus
+
+  // Relationships
+  customer             Customer         @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+  repayments           Repayment[]
+  risk_assessments     RiskAssessment[]
+
+  // Indexes for performance
+  @@index([status])
+  @@index([sector])
+  @@index([customer_id])
+  @@index([disbursement_date])
+}
+
+enum Sector {
+  MANUFACTURING
+  RETAIL
+  IT
+  HEALTHCARE
+  REAL_ESTATE
+  AGRICULTURE
+}
+
+enum LoanType {
+  BUSINESS_LOAN
+  PERSONAL_LOAN
+  HOME_LOAN
+}
+
+enum LoanStatus {
+  ACTIVE
+  CLOSED
+  NPA          // Non-Performing Asset
+  RESTRUCTURED
+}
+
+// ============================================================================
+// TABLE 3: REPAYMENTS
+// ============================================================================
+// Tracks EMI payment history and delinquency (DPD tracking)
+
+model Repayment {
+  id             String        @id @default(uuid())
+  loan_id        String
+  emi_amount     Float         // Expected EMI amount
+  due_date       DateTime      // When payment was due
+  payment_date   DateTime?     // When payment was actually made (null if not paid)
+  payment_status PaymentStatus
+  dpd            Int           // Days Past Due: 0 to 90+
+  payment_amount Float?        // Actual amount paid (may differ from emi_amount)
+
+  // Relationships
+  loan           Loan          @relation(fields: [loan_id], references: [id], onDelete: Cascade)
+
+  // Indexes for performance
+  @@index([loan_id])
+  @@index([payment_status])
+  @@index([dpd])
+  @@index([due_date])
+}
+
+enum PaymentStatus {
+  PAID
+  PENDING
+  DELAYED
+  MISSED
+}
+
+// ============================================================================
+// TABLE 4: RISK_ASSESSMENTS
+// ============================================================================
+// Stores risk analysis, scores, categories, and flags for each loan
+
+model RiskAssessment {
+  id              String       @id @default(uuid())
+  loan_id         String
+  risk_score      Float        // 0-100 (higher = riskier)
+  risk_category   RiskCategory
+  assessment_date DateTime     @default(now())
+  flags           String       // JSON string: {high_dpd, sector_concentration, geography_risk, high_dti}
+  notes           String?      // Additional analyst notes
+
+  // Relationships
+  loan            Loan         @relation(fields: [loan_id], references: [id], onDelete: Cascade)
+
+  // Indexes for performance
+  @@index([risk_category])
+  @@index([risk_score])
+  @@index([loan_id])
+  @@index([assessment_date])
+}
+
+enum RiskCategory {
+  LOW      // 0-35: Minimal risk, healthy payment pattern
+  MEDIUM   // 36-65: Moderate risk, requires monitoring
+  HIGH     // 66-100: High risk, immediate attention needed
+}
+
+// ============================================================================
+// RELATIONSHIPS SUMMARY
+// ============================================================================
+// Customer (1) ──────< (M) Loan
+//                          ├──────< (M) Repayment
+//                          └──────< (M) RiskAssessment
+//
+// - One customer can have multiple loans
+// - One loan has multiple repayment records (monthly EMIs)
+// - One loan has multiple risk assessments (updated periodically)
+// ============================================================================
