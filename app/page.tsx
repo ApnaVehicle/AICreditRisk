@@ -64,7 +64,7 @@ export default function HomePage() {
               Real-time portfolio monitoring with intelligent insights
             </p>
           </div>
-          <PageNavigation currentPage="dashboard" />
+          <PageNavigation currentPage="home" />
         </div>
       </motion.div>
 

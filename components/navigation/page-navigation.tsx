@@ -2,9 +2,9 @@
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { BarChart3, Target, Sparkles } from 'lucide-react'
+import { BarChart3, Target, Sparkles, Home, LineChart } from 'lucide-react'
 
-export type PageType = 'dashboard' | 'foresight' | 'loans'
+export type PageType = 'home' | 'dashboard' | 'foresight' | 'loans'
 
 interface PageConfig {
   id: PageType
@@ -15,10 +15,16 @@ interface PageConfig {
 
 const PAGES: PageConfig[] = [
   {
-    id: 'dashboard',
+    id: 'home',
     label: 'Control Center',
     href: '/',
-    icon: BarChart3,
+    icon: Home,
+  },
+  {
+    id: 'dashboard',
+    label: 'BI Dashboard',
+    href: '/dashboard',
+    icon: LineChart,
   },
   {
     id: 'foresight',
