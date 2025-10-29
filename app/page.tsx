@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { CommandCenterLayout } from '@/components/layout/command-center-layout'
 import { AISidebar } from '@/components/layout/ai-sidebar'
 import { LiveInsightsPanel } from '@/components/layout/live-insights-panel-enhanced'
+import { LoanDetailModal } from '@/components/modals/loan-detail-modal'
 import { AnimatedProgressRing } from '@/components/dashboard/animated-progress-ring'
 import { PremiumStatCard } from '@/components/dashboard/premium-stat-card'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -52,7 +53,7 @@ export default function HomePage() {
       >
         <div className="flex items-center justify-between" style={{ marginBottom: '16px' }}>
           <div>
-            <h1 className="text-premium-hero" style={{
+            <h1 className="text-premium-h2" style={{
               background: 'linear-gradient(135deg, var(--accent-primary) 0%, #A78BFA 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
@@ -142,7 +143,7 @@ export default function HomePage() {
             </h2>
 
             <div className="grid" style={{
-              gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
               gap: '16px'
             }}>
               <PremiumStatCard
@@ -206,7 +207,7 @@ export default function HomePage() {
             </h2>
 
             <div className="grid" style={{
-              gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
               gap: '16px'
             }}>
               <motion.div
@@ -407,6 +408,9 @@ export default function HomePage() {
           </motion.div>
         </>
       )}
+
+      {/* Loan Detail Modal */}
+      <LoanDetailModal />
     </CommandCenterLayout>
   )
 }

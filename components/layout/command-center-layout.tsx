@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { AnimatedBackground } from '@/components/ui/animated-background'
 import { PremiumNav } from './premium-nav'
 import { AlertMarquee } from './alert-marquee'
+import { useLoanModal } from '@/lib/hooks/use-loan-modal'
 
 interface CommandCenterLayoutProps {
   children: React.ReactNode
@@ -22,20 +23,13 @@ export function CommandCenterLayout({
   appName
 }: CommandCenterLayoutProps) {
   const [highlightedAlertId, setHighlightedAlertId] = useState<string | null>(null)
+  const { openModal } = useLoanModal()
 
-  const handleAlertClick = (alertId: string) => {
-    setHighlightedAlertId(alertId)
-
-    // Scroll to the insights panel
-    const insightsPanel = document.getElementById('live-insights-panel')
-    if (insightsPanel) {
-      insightsPanel.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  const handleAlertClick = (loanId: string | null) => {
+    // Open the loan detail modal if loanId is provided
+    if (loanId) {
+      openModal(loanId)
     }
-
-    // Clear highlight after 3 seconds
-    setTimeout(() => {
-      setHighlightedAlertId(null)
-    }, 3000)
   }
 
   return (
@@ -48,32 +42,33 @@ export function CommandCenterLayout({
       {/* Alert Marquee Banner */}
       <AlertMarquee onAlertClick={handleAlertClick} />
 
-      {/* Premium 3-Column Grid: 340px | Flexible | 360px */}
+      {/* Premium 3-Column Grid: 300px (Insights) | 3fr (Dashboard 60%) | 2fr (Argus 40%) */}
       <div
         className="grid"
         style={{
-          gridTemplateColumns: '340px 1fr 360px',
+          gridTemplateColumns: '300px 3fr 2fr',
           height: '100vh',
-          paddingTop: '64px',
+          paddingTop: '104px',
         }}
       >
-        {/* Left Panel - AI Sidebar (340px exact) */}
+        {/* Left Panel - Live Insights (300px compact) */}
         <motion.aside
+          id="live-insights-panel"
           initial={{ x: -100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-          className="glass-sidebar overflow-hidden"
+          className="glass-sidebar overflow-hidden hidden xl:block"
           style={{
-            padding: '24px',
-            height: 'calc(100vh - 64px)',
+            padding: '0',
+            height: 'calc(100vh - 104px)',
           }}
         >
-          <div className="h-full custom-scrollbar overflow-y-auto">
-            {sidebar || <DefaultSidebar />}
-          </div>
+          {React.isValidElement(insights) ? React.cloneElement(insights as React.ReactElement<any>, {
+            highlightedAlertId
+          }) : <DefaultInsights />}
         </motion.aside>
 
-        {/* Center Canvas - Main Dashboard (Flexible with constraints) */}
+        {/* Center Canvas - Main Dashboard (60% of flexible space) */}
         <motion.main
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -81,7 +76,7 @@ export function CommandCenterLayout({
           className="overflow-y-auto custom-scrollbar"
           style={{
             background: 'var(--bg-primary)',
-            height: 'calc(100vh - 64px)',
+            height: 'calc(100vh - 104px)',
           }}
         >
           <div
@@ -95,21 +90,20 @@ export function CommandCenterLayout({
           </div>
         </motion.main>
 
-        {/* Right Panel - Live Insights (360px exact) */}
+        {/* Right Panel - Argus AI Chat (40% of flexible space) */}
         <motion.aside
-          id="live-insights-panel"
           initial={{ x: 100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.4, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
-          className="glass-sidebar overflow-hidden hidden xl:block"
+          className="glass-sidebar overflow-hidden"
           style={{
-            padding: '0',
-            height: 'calc(100vh - 64px)',
+            padding: '24px',
+            height: 'calc(100vh - 104px)',
           }}
         >
-          {React.isValidElement(insights) && React.cloneElement(insights as React.ReactElement<any>, {
-            highlightedAlertId
-          })}
+          <div className="h-full custom-scrollbar overflow-y-auto">
+            {sidebar || <DefaultSidebar />}
+          </div>
         </motion.aside>
       </div>
     </div>

@@ -647,6 +647,18 @@
     line-height: 1.15;
   }
 
+  .text-premium-body {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .text-premium-caption {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
   /* Premium Spacing (4px base) */
   .space-premium-1 { margin: 4px; }
   .space-premium-2 { margin: 8px; }

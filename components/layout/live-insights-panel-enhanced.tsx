@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { TrendingUp, TrendingDown, AlertTriangle, CheckCircle2, Info, Bell, Activity, X, Wifi, ExternalLink, Eye } from 'lucide-react'
 import { useAllAlerts } from '@/lib/hooks/use-alerts'
+import { useLoanModal } from '@/lib/hooks/use-loan-modal'
 import { Button } from '@/components/ui/button'
 import CountUp from 'react-countup'
 import Link from 'next/link'
@@ -23,6 +24,7 @@ interface Metric {
 
 export function LiveInsightsPanel({ highlightedAlertId }: LiveInsightsPanelProps) {
   const { alerts, loading, dismissAlert, highlightedId } = useAllAlerts()
+  const { openModal } = useLoanModal()
   const [metrics, setMetrics] = useState<Metric[]>([])
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date())
   const [isStreaming, setIsStreaming] = useState(true)
@@ -245,13 +247,14 @@ export function LiveInsightsPanel({ highlightedAlertId }: LiveInsightsPanelProps
               <AnimatePresence>
                 {criticalAlerts.map(alert => (
                   <AlertCard
-                    key={alert.id}
+                    key={alert.alert_id}
                     alert={alert}
-                    onDismiss={() => dismissAlert(alert.id)}
+                    onDismiss={() => dismissAlert(alert.alert_id)}
+                    onViewLoan={openModal}
                     getAlertIcon={getAlertIcon}
                     getAlertStyle={getAlertStyle}
                     timeAgo={timeAgo}
-                    isHighlighted={highlightedAlertId === alert.id || highlightedId === alert.id}
+                    isHighlighted={highlightedAlertId === alert.alert_id || highlightedId === alert.alert_id}
                   />
                 ))}
               </AnimatePresence>
@@ -270,13 +273,14 @@ export function LiveInsightsPanel({ highlightedAlertId }: LiveInsightsPanelProps
               <AnimatePresence>
                 {otherAlerts.map(alert => (
                   <AlertCard
-                    key={alert.id}
+                    key={alert.alert_id}
                     alert={alert}
-                    onDismiss={() => dismissAlert(alert.id)}
+                    onDismiss={() => dismissAlert(alert.alert_id)}
+                    onViewLoan={openModal}
                     getAlertIcon={getAlertIcon}
                     getAlertStyle={getAlertStyle}
                     timeAgo={timeAgo}
-                    isHighlighted={highlightedAlertId === alert.id || highlightedId === alert.id}
+                    isHighlighted={highlightedAlertId === alert.alert_id || highlightedId === alert.alert_id}
                   />
                 ))}
               </AnimatePresence>
@@ -304,13 +308,14 @@ export function LiveInsightsPanel({ highlightedAlertId }: LiveInsightsPanelProps
 interface AlertCardProps {
   alert: any
   onDismiss: () => void
+  onViewLoan: (loanId: string) => void
   getAlertIcon: (priority: string) => React.ReactNode
   getAlertStyle: (priority: string) => string
   timeAgo: (date: string) => string
   isHighlighted?: boolean
 }
 
-function AlertCard({ alert, onDismiss, getAlertIcon, getAlertStyle, timeAgo, isHighlighted }: AlertCardProps) {
+function AlertCard({ alert, onDismiss, onViewLoan, getAlertIcon, getAlertStyle, timeAgo, isHighlighted }: AlertCardProps) {
   return (
     <motion.div
       layout
@@ -354,13 +359,14 @@ function AlertCard({ alert, onDismiss, getAlertIcon, getAlertStyle, timeAgo, isH
               {timeAgo(alert.created_at)}
             </span>
             {alert.loan_id && (
-              <Link
-                href={`/loans/${alert.loan_id}`}
-                className="text-[10px] font-medium hover:underline flex items-center gap-1"
+              <button
+                onClick={() => onViewLoan(alert.loan_id)}
+                className="text-[10px] font-medium hover:underline flex items-center gap-1 cursor-pointer bg-transparent border-none"
+                style={{ color: 'var(--accent-primary)' }}
               >
                 View Loan
-                <ExternalLink className="h-2.5 w-2.5" />
-              </Link>
+                <Eye className="h-2.5 w-2.5" />
+              </button>
             )}
           </div>
         </div>

@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 
 export interface Alert {
-  id: string
+  alert_id: string
   loan_id: string
   alert_type: string
   priority: 'critical' | 'high' | 'medium' | 'low'
@@ -80,8 +80,8 @@ export function useAlerts(options: UseAlertsOptions = {}): UseAlertsReturn {
       const data = await response.json()
 
       // Filter out dismissed alerts
-      const filtered = data.alerts?.filter(
-        (alert: Alert) => !dismissedIds.has(alert.id)
+      const filtered = data.data?.filter(
+        (alert: Alert) => !dismissedIds.has(alert.alert_id)
       ) || []
 
       setAlerts(filtered)
@@ -123,7 +123,7 @@ export function useAlerts(options: UseAlertsOptions = {}): UseAlertsReturn {
     })
 
     // Remove from current alerts
-    setAlerts(prev => prev.filter(alert => alert.id !== id))
+    setAlerts(prev => prev.filter(alert => alert.alert_id !== id))
   }, [])
 
   const highlightAlert = useCallback((id: string) => {
@@ -155,7 +155,7 @@ export function useAlerts(options: UseAlertsOptions = {}): UseAlertsReturn {
 // Hook specifically for critical alerts (marquee)
 export function useCriticalAlerts() {
   return useAlerts({
-    priority: 'critical',
+    priority: 'high',
     refreshInterval: 30000,
     autoRefresh: true
   })

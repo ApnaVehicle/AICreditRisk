@@ -7,7 +7,7 @@ import { useCriticalAlerts, Alert } from '@/lib/hooks/use-alerts'
 import Link from 'next/link'
 
 interface AlertMarqueeProps {
-  onAlertClick?: (alertId: string) => void
+  onAlertClick?: (loanId: string | null) => void
 }
 
 export function AlertMarquee({ onAlertClick }: AlertMarqueeProps) {
@@ -71,10 +71,12 @@ export function AlertMarquee({ onAlertClick }: AlertMarqueeProps) {
         left: 0,
         right: 0,
         zIndex: 999,
-        background: 'linear-gradient(90deg, rgba(239, 68, 68, 0.95) 0%, rgba(220, 38, 38, 0.95) 100%)',
-        backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+        background: 'rgba(17, 24, 39, 0.85)',
+        backdropFilter: 'blur(24px)',
+        borderTop: '1px solid rgba(255, 255, 255, 0.05)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+        borderLeft: '4px solid #F59E0B',
+        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.03)',
         overflow: 'hidden',
       }}
     >
@@ -83,14 +85,14 @@ export function AlertMarquee({ onAlertClick }: AlertMarqueeProps) {
         <div
           className="flex items-center gap-2 px-4 border-r"
           style={{
-            borderColor: 'rgba(255, 255, 255, 0.2)',
+            borderColor: 'rgba(255, 255, 255, 0.08)',
             flexShrink: 0,
           }}
         >
           <motion.div
             animate={{
               scale: [1, 1.2, 1],
-              opacity: [1, 0.7, 1]
+              opacity: [0.8, 1, 0.8]
             }}
             transition={{
               duration: 2,
@@ -98,9 +100,9 @@ export function AlertMarquee({ onAlertClick }: AlertMarqueeProps) {
               ease: 'easeInOut'
             }}
           >
-            <AlertTriangle className="h-4 w-4 text-white" />
+            <AlertTriangle className="h-4 w-4" style={{ color: '#F59E0B' }} />
           </motion.div>
-          <span className="text-xs font-semibold text-white">
+          <span className="text-xs font-semibold" style={{ color: '#F9FAFB' }}>
             {enrichedAlerts.length} Critical Alert{enrichedAlerts.length !== 1 ? 's' : ''}
           </span>
         </div>
@@ -113,10 +115,10 @@ export function AlertMarquee({ onAlertClick }: AlertMarqueeProps) {
           <div className="marquee-content" style={{ display: 'flex', gap: '48px' }}>
             {displayAlerts.map((alert, index) => (
               <AlertItem
-                key={`${alert.id}-${index}`}
+                key={`${alert.alert_id}-${index}`}
                 alert={alert}
-                onDismiss={() => dismissAlert(alert.id)}
-                onClick={() => onAlertClick?.(alert.id)}
+                onDismiss={() => dismissAlert(alert.alert_id)}
+                onClick={() => onAlertClick?.(alert.loan_id)}
               />
             ))}
           </div>
@@ -155,12 +157,21 @@ function AlertItem({ alert, onDismiss, onClick }: AlertItemProps) {
       {/* Alert Content */}
       <button
         onClick={onClick}
-        className="flex items-center gap-2 text-white hover:text-white/90 transition-colors"
+        className="flex items-center gap-2 transition-all"
         style={{
           background: 'none',
           border: 'none',
           cursor: 'pointer',
           padding: 0,
+          color: '#F9FAFB',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.color = '#FCD34D'
+          e.currentTarget.style.textShadow = '0 0 8px rgba(245, 158, 11, 0.4)'
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.color = '#F9FAFB'
+          e.currentTarget.style.textShadow = 'none'
         }}
       >
         <span className="text-xs font-medium whitespace-nowrap">
@@ -172,18 +183,26 @@ function AlertItem({ alert, onDismiss, onClick }: AlertItemProps) {
       {/* Dismiss Button */}
       <button
         onClick={handleDismiss}
-        className="flex items-center justify-center hover:bg-white/20 rounded transition-colors"
+        className="flex items-center justify-center rounded transition-all"
         style={{
-          background: 'rgba(255, 255, 255, 0.1)',
-          border: 'none',
+          background: 'rgba(255, 255, 255, 0.06)',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
           cursor: 'pointer',
           padding: '4px',
           width: '20px',
           height: '20px',
         }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = 'rgba(245, 158, 11, 0.15)'
+          e.currentTarget.style.borderColor = 'rgba(245, 158, 11, 0.3)'
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)'
+          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'
+        }}
         title="Dismiss alert"
       >
-        <X className="h-3 w-3 text-white" />
+        <X className="h-3 w-3" style={{ color: '#F9FAFB' }} />
       </button>
     </div>
   )
