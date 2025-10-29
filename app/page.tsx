@@ -143,8 +143,8 @@ export default function HomePage() {
             </h2>
 
             <div className="grid" style={{
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: '16px'
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              gap: '10px'
             }}>
               <PremiumStatCard
                 icon={Activity}
@@ -207,8 +207,8 @@ export default function HomePage() {
             </h2>
 
             <div className="grid" style={{
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: '16px'
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              gap: '10px'
             }}>
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -219,7 +219,7 @@ export default function HomePage() {
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  padding: '24px',
+                  padding: '16px',
                 }}>
                   <CardDescription className="text-center text-premium-label" style={{
                     color: 'var(--text-quaternary)',
@@ -229,8 +229,8 @@ export default function HomePage() {
                   </CardDescription>
                   <AnimatedProgressRing
                     value={kpis?.npa?.grossNPARate || 0}
-                    size={120}
-                    strokeWidth={10}
+                    size={100}
+                    strokeWidth={8}
                   />
                   <p className="text-premium-caption" style={{
                     color: 'var(--text-tertiary)',
@@ -251,7 +251,7 @@ export default function HomePage() {
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  padding: '24px',
+                  padding: '16px',
                 }}>
                   <CardDescription className="text-center text-premium-label" style={{
                     color: 'var(--text-quaternary)',
@@ -261,8 +261,8 @@ export default function HomePage() {
                   </CardDescription>
                   <AnimatedProgressRing
                     value={kpis?.collections?.collectionEfficiency || 0}
-                    size={120}
-                    strokeWidth={10}
+                    size={100}
+                    strokeWidth={8}
                     color="#10B981"
                   />
                   <p className="text-premium-caption" style={{
@@ -284,7 +284,7 @@ export default function HomePage() {
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  padding: '24px',
+                  padding: '16px',
                 }}>
                   <CardDescription className="text-center text-premium-label" style={{
                     color: 'var(--text-quaternary)',
@@ -294,8 +294,8 @@ export default function HomePage() {
                   </CardDescription>
                   <AnimatedProgressRing
                     value={kpis?.delinquency?.par30Rate || 0}
-                    size={120}
-                    strokeWidth={10}
+                    size={100}
+                    strokeWidth={8}
                   />
                   <p className="text-premium-caption" style={{
                     color: 'var(--text-tertiary)',
@@ -316,7 +316,7 @@ export default function HomePage() {
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  padding: '24px',
+                  padding: '16px',
                 }}>
                   <CardDescription className="text-center text-premium-label" style={{
                     color: 'var(--text-quaternary)',
@@ -326,8 +326,8 @@ export default function HomePage() {
                   </CardDescription>
                   <AnimatedProgressRing
                     value={kpis?.risk?.avgRiskScore || 0}
-                    size={120}
-                    strokeWidth={10}
+                    size={100}
+                    strokeWidth={8}
                     showPercentage={false}
                     unit=""
                   />

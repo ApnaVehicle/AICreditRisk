@@ -81,7 +81,7 @@ export function CommandCenterLayout({
         >
           <div
             style={{
-              maxWidth: '1000px',
+              maxWidth: '1230px',
               margin: '0 auto',
               padding: '32px 24px',
             }}
