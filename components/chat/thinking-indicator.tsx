@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Bot, Sparkles } from 'lucide-react'
+import { Eye, Loader2 } from 'lucide-react'
 
 interface ThinkingIndicatorProps {
   variant?: 'dots' | 'wave' | 'typing' | 'pulse'
@@ -15,8 +15,14 @@ export function ThinkingIndicator({
 }: ThinkingIndicatorProps) {
   return (
     <div className="flex gap-2">
-      <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full gradient-ai">
-        <Bot className="h-4 w-4 text-white" />
+      <div
+        className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full"
+        style={{
+          background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
+          boxShadow: '0 0 12px rgba(99, 102, 241, 0.3)'
+        }}
+      >
+        <Eye className="h-4 w-4 text-white" />
       </div>
       <div className="ai-message flex items-center gap-3">
         {variant === 'dots' && <DotsIndicator />}
@@ -29,7 +35,7 @@ export function ThinkingIndicator({
             animate={{ opacity: 1 }}
             className="text-sm text-muted-foreground"
           >
-            AI is analyzing...
+            Argus is analyzing...
           </motion.span>
         )}
       </div>
@@ -109,35 +115,22 @@ function TypingIndicator() {
   )
 }
 
-// Pulse effect with sparkle icon
+// Pulse effect with loader icon
 function PulseIndicator() {
   return (
     <div className="flex items-center gap-2">
       <motion.div
         animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.5, 1, 0.5]
+          rotate: 360
         }}
         transition={{
-          duration: 1.5,
+          duration: 2,
           repeat: Infinity,
-          ease: "easeInOut"
+          ease: "linear"
         }}
         className="relative"
       >
-        <Sparkles className="h-4 w-4 text-primary" />
-        <motion.div
-          className="absolute inset-0 rounded-full bg-primary"
-          animate={{
-            scale: [1, 2, 1],
-            opacity: [0.5, 0, 0.5]
-          }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-            ease: "easeOut"
-          }}
-        />
+        <Loader2 className="h-4 w-4 text-primary" />
       </motion.div>
     </div>
   )

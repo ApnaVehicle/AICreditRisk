@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Send, Bot, User, Sparkles, MessageSquare, AtSign } from 'lucide-react'
+import { Send, User, MessageSquare, AtSign, Eye, HelpCircle, Shield } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { EXAMPLE_QUERIES } from '@/lib/agent'
 import { useReferences, ReferenceEntity } from '@/lib/context/reference-context'
@@ -237,25 +237,57 @@ export function AISidebar() {
       <div className="flex-shrink-0 border-b border-sidebar-border p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg gradient-ai">
-              <Bot className="h-5 w-5 text-white" />
+            <div
+              className="flex h-9 w-9 items-center justify-center rounded-lg"
+              style={{
+                background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
+                boxShadow: '0 0 20px rgba(99, 102, 241, 0.3)'
+              }}
+            >
+              <Eye className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h2 className="text-sm font-semibold">AI Assistant</h2>
-              <p className="text-xs text-muted-foreground">Credit Risk Expert</p>
+              <h2 className="text-sm font-semibold">Argus</h2>
+              <p className="text-xs text-muted-foreground">Risk Intelligence AI</p>
             </div>
           </div>
-          {messages.length > 0 && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={resetConversation}
-              className="h-8 w-8"
-              title="New conversation"
-            >
-              <MessageSquare className="h-4 w-4" />
-            </Button>
-          )}
+          <div className="flex items-center gap-1">
+            <div className="relative group">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+              >
+                <HelpCircle className="h-4 w-4 text-muted-foreground" />
+              </Button>
+              {/* Tooltip */}
+              <div
+                className="absolute right-0 top-full mt-2 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50"
+                style={{
+                  background: 'var(--bg-secondary)',
+                  border: '1px solid var(--border-primary)',
+                  borderRadius: '8px',
+                  padding: '12px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                }}
+              >
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  <strong className="text-foreground">Argus</strong> is your AI-powered risk analyst. Ask about portfolio metrics, loan analysis, NPA trends, or use <code className="text-primary">@references</code> for specific data queries.
+                </p>
+              </div>
+            </div>
+            {messages.length > 0 && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={resetConversation}
+                className="h-8 w-8"
+                title="New conversation"
+              >
+                <MessageSquare className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -268,38 +300,31 @@ export function AISidebar() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="space-y-4"
+              className="space-y-3"
             >
-              <div className="rounded-lg border border-sidebar-border bg-sidebar-accent p-4">
-                <div className="flex items-start gap-3">
-                  <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium">Welcome!</p>
-                    <p className="text-xs text-muted-foreground">
-                      I can analyze your loan portfolio, identify risks, and provide insights on credit metrics.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Quick Actions */}
+              {/* Compact Suggested Questions */}
               {showSuggestions && (
                 <div className="space-y-2">
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Suggested Questions
-                  </p>
-                  <div className="space-y-2">
-                    {EXAMPLE_QUERIES.slice(0, 4).map((query, i) => (
+                  <div className="flex items-center gap-2">
+                    <Shield className="h-3.5 w-3.5 text-primary" />
+                    <p className="text-xs font-medium text-muted-foreground">
+                      Quick Queries
+                    </p>
+                  </div>
+                  <div className="grid gap-2">
+                    {EXAMPLE_QUERIES.slice(0, 5).map((query, i) => (
                       <motion.button
                         key={i}
-                        initial={{ opacity: 0, x: -20 }}
+                        initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.1 }}
+                        transition={{ delay: i * 0.05 }}
                         onClick={() => handleSuggestionClick(query)}
-                        className="w-full text-left rounded-lg border border-sidebar-border bg-sidebar-accent/50 p-3 text-xs hover:bg-sidebar-accent transition-colors"
+                        className="w-full text-left rounded-md border border-sidebar-border bg-sidebar-accent/30 px-3 py-2 text-xs hover:bg-sidebar-accent hover:border-primary/30 transition-all duration-200"
+                        style={{
+                          lineHeight: '1.4',
+                        }}
                       >
-                        <Sparkles className="h-3 w-3 text-primary mb-1 inline-block" />
-                        <span className="ml-2">{query}</span>
+                        {query}
                       </motion.button>
                     ))}
                   </div>
@@ -327,8 +352,14 @@ export function AISidebar() {
                     </div>
                   ) : (
                     <div className="flex gap-2">
-                      <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full gradient-ai">
-                        <Bot className="h-4 w-4 text-white" />
+                      <div
+                        className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full"
+                        style={{
+                          background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
+                          boxShadow: '0 0 12px rgba(99, 102, 241, 0.3)'
+                        }}
+                      >
+                        <Eye className="h-4 w-4 text-white" />
                       </div>
                       <div className="ai-message text-sm max-w-[85%]">
                         <MarkdownMessage

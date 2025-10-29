@@ -101,23 +101,26 @@ function DefaultSidebar() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
         <div className="flex items-center" style={{ gap: '12px' }}>
           <div
-            className="gradient-ai flex items-center justify-center"
+            className="flex items-center justify-center"
             style={{
               width: '32px',
               height: '32px',
               borderRadius: '8px',
+              background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
+              boxShadow: '0 0 20px rgba(99, 102, 241, 0.3)'
             }}
           >
             <svg className="text-white" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
             </svg>
           </div>
           <h1 className="text-premium-h3" style={{ color: 'var(--text-primary)' }}>
-            AI Assistant
+            Argus
           </h1>
         </div>
         <p className="text-premium-label" style={{ color: 'var(--text-quaternary)' }}>
-          Your intelligent credit risk companion
+          Risk Intelligence AI
         </p>
       </div>
 
