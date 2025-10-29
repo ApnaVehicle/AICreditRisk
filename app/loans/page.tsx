@@ -1,13 +1,16 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { CommandCenterLayout } from '@/components/layout/command-center-layout'
+import { AISidebar } from '@/components/layout/ai-sidebar'
+import { LoanDetailModal } from '@/components/modals/loan-detail-modal'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { formatCurrency, getRiskColor, getStatusColor } from '@/lib/utils'
-import { ArrowLeft, Filter, Search } from 'lucide-react'
-import Link from 'next/link'
+import { Filter } from 'lucide-react'
 import { PageNavigation } from '@/components/navigation/page-navigation'
+import { motion } from 'framer-motion'
 
 interface Loan {
   loan_id: string
@@ -51,48 +54,68 @@ export default function LoansPage() {
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-      </div>
+      <CommandCenterLayout
+        sidebar={<AISidebar />}
+        userName="Shahabaj Sheikh"
+        appName="Credit Risk Monitor"
+      >
+        <div className="flex h-full items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+        </div>
+      </CommandCenterLayout>
     )
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <CommandCenterLayout
+      sidebar={<AISidebar />}
+      userName="Shahabaj Sheikh"
+      appName="Credit Risk Monitor"
+    >
       {/* Header */}
-      <div className="border-b bg-card/50 backdrop-blur">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link href="/">
-                <Button variant="ghost" size="icon">
-                  <ArrowLeft className="h-5 w-5" />
-                </Button>
-              </Link>
-              <div>
-                <h1 className="text-2xl font-bold tracking-tight">Loan Portfolio Explorer</h1>
-                <p className="text-sm text-muted-foreground">
-                  Browse and analyze all loans in the portfolio
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center" style={{ gap: '12px' }}>
-              <PageNavigation currentPage="loans" />
-              <Badge variant="outline" className="h-8 px-4">
-                {filteredLoans.length} Loans
-              </Badge>
-            </div>
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+        style={{ marginBottom: '32px' }}
+      >
+        <div className="flex items-center justify-between" style={{ marginBottom: '16px' }}>
+          <div>
+            <h1
+              className="text-premium-h2"
+              style={{
+                background: 'linear-gradient(135deg, var(--accent-primary) 0%, #A78BFA 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              Loan Portfolio Explorer
+            </h1>
+            <p className="text-premium-body" style={{ color: 'var(--text-tertiary)', marginTop: '8px' }}>
+              Browse and analyze all loans in the portfolio
+            </p>
+          </div>
+          <div className="flex items-center" style={{ gap: '12px' }}>
+            <PageNavigation currentPage="loans" />
+            <Badge variant="outline" className="h-8 px-4">
+              {filteredLoans.length} Loans
+            </Badge>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-6 py-8">
-        {/* Filters */}
-        <Card className="mb-6">
+      {/* Filters */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        style={{ marginBottom: '24px' }}
+      >
+        <Card className="premium-card">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Filter className="h-5 w-5" />
+            <CardTitle className="text-premium-h3 flex items-center" style={{ gap: '8px' }}>
+              <Filter className="h-5 w-5" style={{ color: 'var(--accent-primary)' }} />
               Filter by Risk Category
             </CardTitle>
           </CardHeader>
@@ -101,36 +124,46 @@ export default function LoansPage() {
               <Button
                 variant={filter === 'all' ? 'default' : 'outline'}
                 onClick={() => setFilter('all')}
+                className="premium-button"
               >
                 All Loans
               </Button>
               <Button
                 variant={filter === 'high-risk' ? 'default' : 'outline'}
                 onClick={() => setFilter('high-risk')}
+                className="premium-button"
               >
                 High Risk
               </Button>
               <Button
                 variant={filter === 'medium-risk' ? 'default' : 'outline'}
                 onClick={() => setFilter('medium-risk')}
+                className="premium-button"
               >
                 Medium Risk
               </Button>
               <Button
                 variant={filter === 'low-risk' ? 'default' : 'outline'}
                 onClick={() => setFilter('low-risk')}
+                className="premium-button"
               >
                 Low Risk
               </Button>
             </div>
           </CardContent>
         </Card>
+      </motion.div>
 
-        {/* Loans Table */}
-        <Card>
+      {/* Loans Table */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4 }}
+      >
+        <Card className="premium-card">
           <CardHeader>
-            <CardTitle>Loan Portfolio</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-premium-h3">Loan Portfolio</CardTitle>
+            <CardDescription className="text-premium-body" style={{ color: 'var(--text-tertiary)' }}>
               Detailed view of all loans with risk scores and payment status
             </CardDescription>
           </CardHeader>
@@ -198,7 +231,10 @@ export default function LoansPage() {
             </div>
           </CardContent>
         </Card>
-      </div>
-    </div>
+      </motion.div>
+
+      {/* Loan Detail Modal */}
+      <LoanDetailModal />
+    </CommandCenterLayout>
   )
 }

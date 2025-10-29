@@ -42,33 +42,35 @@ export function CommandCenterLayout({
       {/* Alert Marquee Banner */}
       <AlertMarquee onAlertClick={handleAlertClick} />
 
-      {/* Premium 3-Column Grid: 300px (Insights) | 3fr (Dashboard 60%) | 2fr (Argus 40%) */}
+      {/* Premium Grid: 2 or 3 columns depending on insights */}
       <div
         className="grid"
         style={{
-          gridTemplateColumns: '300px 3fr 2fr',
+          gridTemplateColumns: insights ? '300px 3fr 2fr' : '1fr 456px',
           height: '100vh',
           paddingTop: '104px',
         }}
       >
-        {/* Left Panel - Live Insights (300px compact) */}
-        <motion.aside
-          id="live-insights-panel"
-          initial={{ x: -100, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-          className="glass-sidebar overflow-hidden hidden xl:block"
-          style={{
-            padding: '0',
-            height: 'calc(100vh - 104px)',
-          }}
-        >
-          {React.isValidElement(insights) ? React.cloneElement(insights as React.ReactElement<any>, {
-            highlightedAlertId
-          }) : <DefaultInsights />}
-        </motion.aside>
+        {/* Left Panel - Live Insights (300px compact) - Only render if insights provided */}
+        {insights && (
+          <motion.aside
+            id="live-insights-panel"
+            initial={{ x: -100, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+            className="glass-sidebar overflow-hidden hidden xl:block"
+            style={{
+              padding: '0',
+              height: 'calc(100vh - 104px)',
+            }}
+          >
+            {React.isValidElement(insights) ? React.cloneElement(insights as React.ReactElement<any>, {
+              highlightedAlertId
+            }) : insights}
+          </motion.aside>
+        )}
 
-        {/* Center Canvas - Main Dashboard (60% of flexible space) */}
+        {/* Center Canvas - Main Content (60% when insights present, 60% when no insights) */}
         <motion.main
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -90,7 +92,7 @@ export function CommandCenterLayout({
           </div>
         </motion.main>
 
-        {/* Right Panel - Argus AI Chat (40% of flexible space) */}
+        {/* Sidebar Panel - Argus AI Chat (always on right: column 3 with insights, column 2 without) */}
         <motion.aside
           initial={{ x: 100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
