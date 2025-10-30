@@ -40,7 +40,7 @@ interface FilterPanelProps {
 export function FilterPanel({ onFilterChange }: FilterPanelProps) {
   const { filters, setDateRange, setSectors, setGeographies, setRiskCategories, setLoanStatuses, resetFilters } =
     useFilterStore()
-  const [isExpanded, setIsExpanded] = useState(true)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   const toggleSector = (sector: Sector) => {
     const newSectors = filters.sectors.includes(sector)
