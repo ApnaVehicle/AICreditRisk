@@ -16,9 +16,10 @@ import {
 
 interface VintageAnalysisProps {
   isLoading?: boolean
+  queryParams?: string
 }
 
-export function VintageAnalysis({ isLoading = false }: VintageAnalysisProps) {
+export function VintageAnalysis({ isLoading = false, queryParams = '' }: VintageAnalysisProps) {
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -26,12 +27,15 @@ export function VintageAnalysis({ isLoading = false }: VintageAnalysisProps) {
 
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [queryParams])
 
   const fetchData = async () => {
     try {
       setLoading(true)
-      const response = await fetch('/api/bi-dashboard/vintage-analysis')
+      const url = queryParams
+        ? `/api/bi-dashboard/vintage-analysis?${queryParams}`
+        : '/api/bi-dashboard/vintage-analysis'
+      const response = await fetch(url)
       if (!response.ok) throw new Error('Failed to fetch data')
 
       const result = await response.json()

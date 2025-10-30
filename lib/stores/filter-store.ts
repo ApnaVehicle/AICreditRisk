@@ -33,22 +33,27 @@ interface FilterStore {
   getQueryParams: () => URLSearchParams
 }
 
-// Default filters - Last 30 days
-const getDefaultFilters = (): DashboardFilters => ({
-  dateRange: {
-    from: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
-    to: new Date(),
-  },
-  sectors: [],
-  geographies: [],
-  riskCategories: [],
-  loanStatuses: [],
-  amountRange: {
-    min: 0,
-    max: 100000000, // 10 Cr
-  },
-  searchQuery: '',
-})
+// Default filters - Last 2 years (matching seed data)
+const getDefaultFilters = (): DashboardFilters => {
+  const twoYearsAgo = new Date()
+  twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2)
+
+  return {
+    dateRange: {
+      from: twoYearsAgo,
+      to: new Date(),
+    },
+    sectors: [],
+    geographies: [],
+    riskCategories: [],
+    loanStatuses: [],
+    amountRange: {
+      min: 0,
+      max: 100000000, // 10 Cr
+    },
+    searchQuery: '',
+  }
+}
 
 export const useFilterStore = create<FilterStore>((set, get) => ({
   filters: getDefaultFilters(),

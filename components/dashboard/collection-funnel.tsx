@@ -29,21 +29,25 @@ interface FunnelStage {
 
 interface CollectionFunnelProps {
   isLoading?: boolean
+  queryParams?: string
 }
 
-export function CollectionFunnel({ isLoading = false }: CollectionFunnelProps) {
+export function CollectionFunnel({ isLoading = false, queryParams = '' }: CollectionFunnelProps) {
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [queryParams])
 
   const fetchData = async () => {
     try {
       setLoading(true)
-      const response = await fetch('/api/bi-dashboard/collection-funnel')
+      const url = queryParams
+        ? `/api/bi-dashboard/collection-funnel?${queryParams}`
+        : '/api/bi-dashboard/collection-funnel'
+      const response = await fetch(url)
       if (!response.ok) throw new Error('Failed to fetch data')
 
       const result = await response.json()

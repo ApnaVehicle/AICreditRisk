@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import { buildLoanWhereClause } from '@/lib/utils/filter-builder'
 
 /**
  * GET /api/bi-dashboard/concentration-matrix
@@ -14,17 +15,26 @@ import { prisma } from '@/lib/db'
  * - HHI < 1500: Unconcentrated
  * - HHI 1500-2500: Moderate concentration
  * - HHI > 2500: High concentration
+ *
+ * Query Parameters: Supports all filters from filter store
  */
 
 export async function GET(request: NextRequest) {
   try {
-    // Fetch all active loans with customer details
+    // Extract and build WHERE clause from query parameters
+    const { searchParams } = new URL(request.url)
+    const filterWhere = buildLoanWhereClause(searchParams)
+
+    // Merge filter WHERE with default status filter
+    // Default includes ACTIVE + RESTRUCTURED + NPA for concentration analysis
+    const where = {
+      ...filterWhere,
+      status: filterWhere.status || { in: ['ACTIVE', 'RESTRUCTURED', 'NPA'] as any },
+    }
+
+    // Fetch loans with filters applied
     const loans = await prisma.loan.findMany({
-      where: {
-        status: {
-          in: ['ACTIVE', 'RESTRUCTURED', 'NPA'],
-        },
-      },
+      where,
       include: {
         customer: true,
         risk_assessments: {

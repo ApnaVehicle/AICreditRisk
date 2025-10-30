@@ -21,21 +21,25 @@ interface KPI {
 
 interface ExecutiveSummaryProps {
   isLoading?: boolean
+  queryParams?: string
 }
 
-export function ExecutiveSummary({ isLoading = false }: ExecutiveSummaryProps) {
+export function ExecutiveSummary({ isLoading = false, queryParams = '' }: ExecutiveSummaryProps) {
   const [kpis, setKpis] = useState<KPI[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [queryParams])
 
   const fetchData = async () => {
     try {
       setLoading(true)
-      const response = await fetch('/api/bi-dashboard/executive-summary')
+      const url = queryParams
+        ? `/api/bi-dashboard/executive-summary?${queryParams}`
+        : '/api/bi-dashboard/executive-summary'
+      const response = await fetch(url)
       if (!response.ok) throw new Error('Failed to fetch data')
 
       const result = await response.json()

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import { buildLoanWhereClause, buildRepaymentWhereClause } from '@/lib/utils/filter-builder'
 
 /**
  * GET /api/bi-dashboard/executive-summary
@@ -11,12 +12,27 @@ import { prisma } from '@/lib/db'
  * 2. Gross NPA Rate - Percentage of non-performing assets
  * 3. Collection Efficiency - Percentage of successful collections
  * 4. Credit Cost Ratio - Provisions and write-offs as % of portfolio
+ *
+ * Query Parameters: Supports all filters from filter store
+ * - startDate, endDate (date range)
+ * - sector (can be multiple)
+ * - geography (can be multiple)
+ * - riskCategory (can be multiple)
+ * - status (can be multiple)
+ * - minAmount, maxAmount (amount range)
+ * - search (customer name or loan ID)
  */
 
 export async function GET(request: NextRequest) {
   try {
-    // Fetch all loans with relationships
+    // Extract and build WHERE clause from query parameters
+    const { searchParams } = new URL(request.url)
+    const loanWhere = buildLoanWhereClause(searchParams)
+    const repaymentWhere = buildRepaymentWhereClause(searchParams)
+
+    // Fetch loans with filters applied
     const loans = await prisma.loan.findMany({
+      where: loanWhere,
       include: {
         customer: true,
         repayments: {
@@ -30,6 +46,7 @@ export async function GET(request: NextRequest) {
     })
 
     const allRepayments = await prisma.repayment.findMany({
+      where: repaymentWhere,
       orderBy: { due_date: 'asc' },
     })
 

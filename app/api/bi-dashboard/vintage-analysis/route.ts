@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import { buildLoanWhereClause } from '@/lib/utils/filter-builder'
 
 /**
  * GET /api/bi-dashboard/vintage-analysis
@@ -13,12 +14,19 @@ import { prisma } from '@/lib/db'
  * - NPL rate by vintage
  * - Recovery rate by vintage
  * - Portfolio maturation curve
+ *
+ * Query Parameters: Supports all filters from filter store
  */
 
 export async function GET(request: NextRequest) {
   try {
-    // Fetch all loans with repayment history
+    // Extract and build WHERE clause from query parameters
+    const { searchParams } = new URL(request.url)
+    const where = buildLoanWhereClause(searchParams)
+
+    // Fetch loans with filters applied
     const loans = await prisma.loan.findMany({
+      where,
       include: {
         customer: true,
         repayments: {

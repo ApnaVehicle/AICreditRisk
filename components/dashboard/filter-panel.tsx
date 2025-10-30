@@ -1,19 +1,14 @@
 'use client'
 
 import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useFilterStore, Sector, RiskCategory, LoanStatus } from '@/lib/stores/filter-store'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { Filter, X, Calendar, RefreshCw } from 'lucide-react'
-import { format } from 'date-fns'
+import { DateRangePicker } from '@/components/ui/date-range-picker'
+import { Filter, X, RefreshCw, ChevronDown } from 'lucide-react'
+import { DateRange } from 'react-day-picker'
 
 const SECTORS: Sector[] = [
   'MANUFACTURING',
@@ -43,7 +38,7 @@ interface FilterPanelProps {
 }
 
 export function FilterPanel({ onFilterChange }: FilterPanelProps) {
-  const { filters, setSectors, setGeographies, setRiskCategories, setLoanStatuses, resetFilters } =
+  const { filters, setDateRange, setSectors, setGeographies, setRiskCategories, setLoanStatuses, resetFilters } =
     useFilterStore()
   const [isExpanded, setIsExpanded] = useState(true)
 
@@ -79,6 +74,13 @@ export function FilterPanel({ onFilterChange }: FilterPanelProps) {
     onFilterChange?.()
   }
 
+  const handleDateRangeChange = (dateRange: DateRange | undefined) => {
+    if (dateRange?.from && dateRange?.to) {
+      setDateRange(dateRange.from, dateRange.to)
+      onFilterChange?.()
+    }
+  }
+
   const activeFiltersCount =
     filters.sectors.length +
     filters.geographies.length +
@@ -90,45 +92,33 @@ export function FilterPanel({ onFilterChange }: FilterPanelProps) {
     onFilterChange?.()
   }
 
-  if (!isExpanded) {
-    return (
-      <div className="mb-4 flex items-center justify-between">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setIsExpanded(true)}
-          className="gap-2"
-        >
-          <Filter className="h-4 w-4" />
-          Show Filters
-          {activeFiltersCount > 0 && (
-            <Badge variant="secondary" className="ml-1">
-              {activeFiltersCount}
-            </Badge>
-          )}
-        </Button>
-        {activeFiltersCount > 0 && (
-          <Button variant="ghost" size="sm" onClick={handleReset} className="gap-2">
-            <RefreshCw className="h-4 w-4" />
-            Reset
-          </Button>
-        )}
-      </div>
-    )
-  }
-
   return (
-    <Card className="mb-6">
-      <CardContent className="p-6">
+    <motion.div
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+      className="mb-6"
+    >
+      <Card>
+        <CardContent className="p-6">
         {/* Header */}
         <div className="mb-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="flex items-center gap-2 text-left transition-colors hover:text-primary"
+          >
             <Filter className="h-4 w-4 text-muted-foreground" />
             <h3 className="font-semibold">Filters</h3>
             {activeFiltersCount > 0 && (
               <Badge variant="secondary">{activeFiltersCount} active</Badge>
             )}
-          </div>
+            <motion.div
+              animate={{ rotate: isExpanded ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            </motion.div>
+          </button>
           <div className="flex items-center gap-2">
             {activeFiltersCount > 0 && (
               <Button variant="ghost" size="sm" onClick={handleReset} className="gap-2">
@@ -136,32 +126,29 @@ export function FilterPanel({ onFilterChange }: FilterPanelProps) {
                 Reset All
               </Button>
             )}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsExpanded(false)}
+          </div>
+        </div>
+
+        <AnimatePresence initial={false}>
+          {isExpanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+              style={{ overflow: "hidden" }}
             >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
+              {/* Date Range */}
+              <div className="mb-4">
+                <label className="mb-2 block text-sm font-medium">Date Range</label>
+                <DateRangePicker
+                  date={{ from: filters.dateRange.from, to: filters.dateRange.to }}
+                  onDateChange={handleDateRangeChange}
+                />
+              </div>
 
-        {/* Date Range */}
-        <div className="mb-4 grid gap-4 md:grid-cols-2">
-          <div>
-            <label className="mb-2 block text-sm font-medium">Date Range</label>
-            <div className="flex items-center gap-2 rounded-md border px-3 py-2">
-              <Calendar className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm">
-                {format(filters.dateRange.from, 'MMM d, yyyy')} -{' '}
-                {format(filters.dateRange.to, 'MMM d, yyyy')}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Filters Grid */}
-        <div className="space-y-4">
+              {/* Filters Grid */}
+              <div className="space-y-4">
           {/* Sectors */}
           <div>
             <label className="mb-2 block text-sm font-medium">Sectors</label>
@@ -241,8 +228,12 @@ export function FilterPanel({ onFilterChange }: FilterPanelProps) {
               ))}
             </div>
           </div>
-        </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </CardContent>
     </Card>
+    </motion.div>
   )
 }

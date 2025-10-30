@@ -26,21 +26,25 @@ interface PARDataset {
 
 interface PARCascadeProps {
   isLoading?: boolean
+  queryParams?: string
 }
 
-export function PARCascade({ isLoading = false }: PARCascadeProps) {
+export function PARCascade({ isLoading = false, queryParams = '' }: PARCascadeProps) {
   const [parData, setParData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [queryParams])
 
   const fetchData = async () => {
     try {
       setLoading(true)
-      const response = await fetch('/api/bi-dashboard/par-cascade')
+      const url = queryParams
+        ? `/api/bi-dashboard/par-cascade?${queryParams}`
+        : '/api/bi-dashboard/par-cascade'
+      const response = await fetch(url)
       if (!response.ok) throw new Error('Failed to fetch data')
 
       const result = await response.json()

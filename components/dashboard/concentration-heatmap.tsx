@@ -17,9 +17,10 @@ import {
 
 interface ConcentrationHeatmapProps {
   isLoading?: boolean
+  queryParams?: string
 }
 
-export function ConcentrationHeatmap({ isLoading = false }: ConcentrationHeatmapProps) {
+export function ConcentrationHeatmap({ isLoading = false, queryParams = '' }: ConcentrationHeatmapProps) {
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -27,12 +28,15 @@ export function ConcentrationHeatmap({ isLoading = false }: ConcentrationHeatmap
 
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [queryParams])
 
   const fetchData = async () => {
     try {
       setLoading(true)
-      const response = await fetch('/api/bi-dashboard/concentration-matrix')
+      const url = queryParams
+        ? `/api/bi-dashboard/concentration-matrix?${queryParams}`
+        : '/api/bi-dashboard/concentration-matrix'
+      const response = await fetch(url)
       if (!response.ok) throw new Error('Failed to fetch data')
 
       const result = await response.json()

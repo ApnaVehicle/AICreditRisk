@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import { buildLoanWhereClause } from '@/lib/utils/filter-builder'
 
 /**
  * GET /api/bi-dashboard/par-cascade
@@ -15,17 +16,26 @@ import { prisma } from '@/lib/db'
  * - PAR-90: % of portfolio with DPD >= 90 (pre-NPA threshold)
  *
  * PAR = (Outstanding amount of delinquent loans / Total outstanding) × 100
+ *
+ * Query Parameters: Supports all filters from filter store
  */
 
 export async function GET(request: NextRequest) {
   try {
-    // Fetch all loans with latest repayment info
+    // Extract and build WHERE clause from query parameters
+    const { searchParams } = new URL(request.url)
+    const filterWhere = buildLoanWhereClause(searchParams)
+
+    // Merge filter WHERE with default status filter (only active portfolio)
+    // If user explicitly filters by status, use their filter; otherwise default to ACTIVE + RESTRUCTURED
+    const where = {
+      ...filterWhere,
+      status: filterWhere.status || { in: ['ACTIVE', 'RESTRUCTURED'] as any },
+    }
+
+    // Fetch loans with filters applied
     const loans = await prisma.loan.findMany({
-      where: {
-        status: {
-          in: ['ACTIVE', 'RESTRUCTURED'], // Only consider active portfolio
-        },
-      },
+      where,
       include: {
         repayments: {
           orderBy: { due_date: 'desc' },

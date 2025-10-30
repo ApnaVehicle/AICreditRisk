@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import { buildRepaymentWhereClause } from '@/lib/utils/filter-builder'
 
 /**
  * GET /api/bi-dashboard/collection-funnel
@@ -15,12 +16,19 @@ import { prisma } from '@/lib/db'
  * 5. Serious Delinquency (31-60 DPD) - Collected after escalation
  * 6. Critical (61-90 DPD) - Collected after legal notice
  * 7. Written Off (90+ DPD) - Unrecovered
+ *
+ * Query Parameters: Supports all filters from filter store
  */
 
 export async function GET(request: NextRequest) {
   try {
-    // Fetch all repayments
+    // Extract and build WHERE clause from query parameters
+    const { searchParams } = new URL(request.url)
+    const where = buildRepaymentWhereClause(searchParams)
+
+    // Fetch repayments with filters applied
     const allRepayments = await prisma.repayment.findMany({
+      where,
       include: {
         loan: {
           include: {

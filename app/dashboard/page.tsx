@@ -1,10 +1,12 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { CommandCenterLayout } from '@/components/layout/command-center-layout'
 import { AISidebar } from '@/components/layout/ai-sidebar'
 import { PageNavigation } from '@/components/navigation/page-navigation'
+import { FilterPanel } from '@/components/dashboard/filter-panel'
+import { useFilterStore } from '@/lib/stores/filter-store'
 import { ExecutiveSummary } from '@/components/dashboard/executive-summary'
 import { PARCascade } from '@/components/dashboard/par-cascade'
 import { ConcentrationHeatmap } from '@/components/dashboard/concentration-heatmap'
@@ -13,6 +15,15 @@ import { CollectionFunnel } from '@/components/dashboard/collection-funnel'
 import { BarChart3, TrendingUp, Activity, Info } from 'lucide-react'
 
 export default function DashboardPage() {
+  const { getQueryParams } = useFilterStore()
+  const [refreshKey, setRefreshKey] = useState(0)
+
+  const handleFilterChange = () => {
+    setRefreshKey((prev) => prev + 1)
+  }
+
+  const queryParams = getQueryParams().toString()
+
   return (
     <CommandCenterLayout
       sidebar={<AISidebar />}
@@ -102,6 +113,15 @@ export default function DashboardPage() {
           </div>
         </motion.div>
 
+        {/* Filter Panel */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.05, ease: [0.4, 0, 0.2, 1] }}
+        >
+          <FilterPanel onFilterChange={handleFilterChange} />
+        </motion.div>
+
         {/* Section 1: Executive Summary KPIs */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
@@ -119,7 +139,7 @@ export default function DashboardPage() {
               Top-level portfolio health indicators and key performance metrics
             </p>
           </div>
-          <ExecutiveSummary />
+          <ExecutiveSummary key={`exec-${refreshKey}`} queryParams={queryParams} />
         </motion.section>
 
         {/* Section 2: PAR Cascade */}
@@ -128,7 +148,7 @@ export default function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
         >
-          <PARCascade />
+          <PARCascade key={`par-${refreshKey}`} queryParams={queryParams} />
         </motion.section>
 
         {/* Section 3: Two Column Layout - Concentration and Vintage */}
@@ -144,12 +164,12 @@ export default function DashboardPage() {
         >
           {/* Concentration Risk */}
           <div>
-            <ConcentrationHeatmap />
+            <ConcentrationHeatmap key={`conc-${refreshKey}`} queryParams={queryParams} />
           </div>
 
           {/* Vintage Analysis */}
           <div>
-            <VintageAnalysis />
+            <VintageAnalysis key={`vintage-${refreshKey}`} queryParams={queryParams} />
           </div>
         </motion.div>
 
@@ -159,7 +179,7 @@ export default function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
         >
-          <CollectionFunnel />
+          <CollectionFunnel key={`funnel-${refreshKey}`} queryParams={queryParams} />
         </motion.section>
 
         {/* Section 5: Data Freshness Footer */}
