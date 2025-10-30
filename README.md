@@ -1,4 +1,4 @@
-# Credit Risk Monitoring Agentic AI Platform
+# Argus Credit Risk Platform
 
 A comprehensive credit risk monitoring and management system powered by AI agents, built for NBFCs and financial institutions. This platform provides real-time portfolio monitoring, intelligent risk assessment, and proactive alerts.
 

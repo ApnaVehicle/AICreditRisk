@@ -41,7 +41,7 @@ export default function HomePage() {
       sidebar={<AISidebar />}
       insights={<LiveInsightsPanel />}
       userName="Shahabaj Sheikh"
-      appName="Credit Risk Monitor"
+      appName="Argus Credit Risk Platform"
     >
       {/* Premium Header */}
       <motion.div
@@ -58,7 +58,7 @@ export default function HomePage() {
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
             }}>
-              AI Credit Risk Command Center
+              Argus Credit Risk Platform
             </h1>
             <p className="text-premium-body" style={{ color: 'var(--text-tertiary)', marginTop: '8px' }}>
               Real-time portfolio monitoring with intelligent insights

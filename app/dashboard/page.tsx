@@ -27,7 +27,7 @@ export default function DashboardPage() {
   return (
     <CommandCenterLayout
       sidebar={<AISidebar />}
-      userName="Portfolio Manager"
+      userName="Shahabaj Sheikh"
       appName="Argus Credit Risk Platform"
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>

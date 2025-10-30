@@ -63,7 +63,7 @@ export default function ForesightPage() {
       sidebar={<AISidebar />}
       insights={<LiveInsightsPanel />}
       userName="Shahabaj Sheikh"
-      appName="Credit Risk Monitor"
+      appName="Argus Credit Risk Platform"
     >
       {/* Header */}
       <motion.div

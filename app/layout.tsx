@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Credit Risk Command Center",
+  title: "Argus Credit Risk Platform",
   description: "AI-powered credit risk monitoring and portfolio management system",
 };
 

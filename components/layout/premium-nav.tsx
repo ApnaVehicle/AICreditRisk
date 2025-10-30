@@ -11,7 +11,7 @@ interface PremiumNavProps {
 
 export function PremiumNav({
   userName = 'Shahabaj Sheikh',
-  appName = 'Credit Risk Monitor'
+  appName = 'Argus Credit Risk Platform'
 }: PremiumNavProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 

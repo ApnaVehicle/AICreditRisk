@@ -86,7 +86,7 @@ export default function LoansPage() {
       <CommandCenterLayout
         sidebar={<AISidebar />}
         userName="Shahabaj Sheikh"
-        appName="Credit Risk Monitor"
+        appName="Argus Credit Risk Platform"
       >
         <div className="flex h-full items-center justify-center">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
@@ -99,7 +99,7 @@ export default function LoansPage() {
     <CommandCenterLayout
       sidebar={<AISidebar />}
       userName="Shahabaj Sheikh"
-      appName="Credit Risk Monitor"
+      appName="Argus Credit Risk Platform"
     >
       {/* Header */}
       <motion.div
